@@ -1,1 +1,2 @@
-console.log("Hello NodeJS");
+var myvar = require("./myvar");
+console.log(myvar.a);
