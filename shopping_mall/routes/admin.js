@@ -5,4 +5,8 @@ router.get("/", function(req, res) {
     res.send("admin page");
 });
 
+router.get("/products", function(req, res) {
+    res.send("admin products");
+});
+
 module.exports = router;
