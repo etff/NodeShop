@@ -8,7 +8,8 @@ router.get("/", function(req, res) {
 router.get("/products", function(req, res) {
     // res.send("admin products");
     res.render("admin/products", {
-        "school" : "nodejs"
+        "school": "nodejs",
+        "camp"  : "javascript"
     });
 });
 
