@@ -14,8 +14,6 @@ app.get('/', function(req, res) {
     res.send("first app");
 });
 
-
-
 app.use("/admin", admin);
 
 app.listen( port, function() {
