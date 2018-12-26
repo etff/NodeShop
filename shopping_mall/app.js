@@ -4,7 +4,21 @@ var admin = require("./routes/admin")
 var app = express();
 var port = 3000;
 
-// 확장자가 ejs 로 끝나는 뷰 엔지을 추가한다.
+var express = require('express');
+
+//MongoDB 접속
+var mongoose = require('mongoose');
+
+var db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', function(){
+    console.log('mongodb connect');
+});
+
+mongoose.connect('mongodb://127.0.0.1:27017/fastcampus', { useMongoClient: true });
+
+
+// 확장자가 ejs 로 끝나는 뷰 엔진을 추가한다.
 app.set("views", path.join(__dirname, "views"));
 console.log(__dirname);
 app.set("view engine", "ejs");
@@ -14,6 +28,7 @@ app.get('/', function(req, res) {
     res.send("first app");
 });
 
+// 미들웨어 사용
 app.use("/admin", admin);
 
 app.listen( port, function() {
