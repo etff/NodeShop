@@ -10,6 +10,9 @@ var express = require('express');
 //MongoDB 접속
 var mongoose = require('mongoose');
 
+// NoodeJS의 내장 Promise로 변경
+mongoose.Promise = global.Promise;
+
 var db = mongoose.connection;
 db.on('error', console.error);
 db.once('open', function(){
@@ -17,7 +20,6 @@ db.once('open', function(){
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/fastcampus', { useMongoClient: true });
-
 
 // 확장자가 ejs 로 끝나는 뷰 엔진을 추가한다.
 app.set("views", path.join(__dirname, "views"));

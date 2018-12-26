@@ -7,11 +7,15 @@ router.get("/", function(req, res) {
 });
 
 router.get("/products", function(req, res) {
-    // res.send("admin products");
-    res.render("admin/products", {
-        "school": "nodejs",
-        "camp"  : "javascript"
+    
+    ProductsModel.find({}, function(err, products) {
+        res.render("admin/products", {
+            "products": products
+        });
     });
+    
+    // res.send("admin products");
+    
 });
 
 router.get("/products/write", function(req, res) {
