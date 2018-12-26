@@ -37,6 +37,13 @@ router.post("/products/write", function(req, res) {
     });
 
     product.save(function(err) {
+        // if(err) try {
+            
+        // } catch (error) {
+            
+        // }
+
+        // 사용자 redirect시킴
         res.redirect("/admin/products");
     })
 });
