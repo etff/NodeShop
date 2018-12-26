@@ -13,4 +13,8 @@ router.get("/products", function(req, res) {
     });
 });
 
+router.get("/products/write", function(req, res) {
+    res.render("admin/form");
+});
+
 module.exports = router;

@@ -3,7 +3,8 @@ var path = require("path");
 var admin = require("./routes/admin")
 var app = express();
 var port = 3000;
-
+var logger = require('morgan');
+var bodyParser = require('body-parser');
 var express = require('express');
 
 //MongoDB 접속
@@ -23,6 +24,10 @@ app.set("views", path.join(__dirname, "views"));
 console.log(__dirname);
 app.set("view engine", "ejs");
 
+// 미들웨어 셋팅
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', function(req, res) {
     res.send("first app");
