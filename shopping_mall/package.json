@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
+    "start": "npx nodemon app.js",
     "build": "nodemon app.js"
   },
   "author": "",
@@ -18,5 +18,8 @@
     "mongoose-plugin-autoinc": "^1.1.9",
     "morgan": "^1.9.1",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
   }
 }
