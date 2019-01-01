@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var { autoIncrement } = require('mongoose-plugin-autoinc');
 
-var ContactsSchema = new ContactsSchema({
+var ContactsSchema = new Schema({
     name        : String,   // 이름
     phone       : String,   // 전화번호부. 
     email       : String,   // 이메일
@@ -27,5 +27,5 @@ ContactsSchema.virtual('getDate').get(function() {
 // Model : 생성할 document 이름
 // field : Primary key, startAt : 1
 
-ContactsSchema.plugin(autoincrement, { model: 'contacts', field : 'id', startAt : 1 });
-model.exports = mongoose.model('contacts', ContactsSchema);
+ContactsSchema.plugin(autoIncrement, { model: 'contacts', field : 'id', startAt : 1 });
+module.exports = mongoose.model('contacts', ContactsSchema);

@@ -1,6 +1,7 @@
 var express = require("express");
 var path = require("path");
 var admin = require("./routes/admin")
+var contacts = require("./routes/contacts")
 var app = express();
 var port = 3000;
 var logger = require('morgan');
@@ -37,6 +38,7 @@ app.get('/', function(req, res) {
 
 // 미들웨어 사용
 app.use("/admin", admin);
+app.use("/contacts", contacts);
 
 app.listen( port, function() {
     console.log("Express Listening on port", port);
