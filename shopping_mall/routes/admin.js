@@ -33,23 +33,4 @@ router.post('/products/write', function(req,res){
     });
 });
 
-router.post("/products/write", function(req, res) {
-    var product = new ProductsModel({
-        name        : req.body.name,
-        price       : req.body.price,
-        description : req.body.description
-    });
-
-    product.save(function(err) {
-        // if(err) try {
-            
-        // } catch (error) {
-            
-        // }
-
-        // 사용자 redirect시킴
-        res.redirect("/admin/products");
-    })
-});
-
 module.exports = router;
