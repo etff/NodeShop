@@ -71,4 +71,20 @@ router.get("/products/delete/:id", function(req, res) {
     });
 });
 
+router.post("/products/ajax_comment/insert", function(req, res) {
+    
+    var comment = new CommentsModel({
+        content : req.body.content,
+        product_id : parseInt(req.body.product_id)
+    });
+    
+    comment.save(function(err, comment){
+        res.json({
+            id : comment.id,
+            content : comment.content,
+            message : "success"
+        });
+    });
+});
+
 module.exports = router;

@@ -8,7 +8,7 @@
         <% contacts.forEach(function(contact){%>
             <tr>
                 <td>
-                    <a href="/contacts/contacts/detail/<%=contact.id%>">
+                    <a href="/contacts/detail/<%=contact.id%>">
                         <%=contact.name%>
                     </a>
                 </td>
@@ -25,6 +25,6 @@
 
     </table>
 
-    <a href="/contacts/contacts/write" class="btn btn-default">작성하기</a>
+    <a href="/contacts/write" class="btn btn-default">작성하기</a>
 
 <% include ../footer.ejs %>
