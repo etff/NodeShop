@@ -26,10 +26,11 @@ router.post('/write', function(req,res){
     });
 });
 
-router.get("/detail/:id", function(req, res) {
-
-    ContactsModel.findOne( {"id" : req.params.id }, function(err, contact) {
-        res.render("/contactsDetail", { contact : contact });
+router.get("/detail/:id", function(req, res){
+    
+    //url 에서 변수 값을 받아올떈 req.params.id 로 받아온다
+    ContactsModel.findOne( { "id" :  req.params.id } , function(err ,contact){
+        res.render("contacts/contactsDetail", { contact: contact });  
     });
 });
 

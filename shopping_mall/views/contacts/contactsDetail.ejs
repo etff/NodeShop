@@ -1,5 +1,36 @@
 <% include ../header.ejs %>
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <%=contact.name%>
+        </div>
+        <div class="panel-body">
+            <div style="padding-bottom: 10px">
+                작성일 : 
+                <%=contact.getDate.year%> -
+                <%=contact.getDate.month%> -
+                <%=contact.getDate.day%> 
+            </div>
+
+            <%=contact.email%> 
+            <!-- 댓글영역  -->
+            <hr />
+            <div id="comment_area"></div>
+            
+            <div>
+                댓글작성하기
+                <form id="commentForm" action="" method="post">
+                    <input type="hidden" name="contact_id" value="<%=contact.id%>" />
+                    <textarea class="form-control" name="content"></textarea>
+                    <button class="btn btn-primary" style="margin-top: 10px">댓글작성</button>
+                </form>
+            </div>
+            <!-- 댓글영역  -->
+
+        </div>
+    </div>
+    <a href="/admin/products" class="btn btn-default">목록으로</a>
+    <a href="/admin/products/edit/<%=contact.id%>" class="btn btn-primary">수정</a>
 
 
 <% include ../footer.ejs %>
