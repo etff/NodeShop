@@ -26,4 +26,11 @@ router.post('/write', function(req,res){
     });
 });
 
+router.get("/detail/:id", function(req, res) {
+
+    ContactsModel.findOne( {"id" : req.params.id }, function(err, contact) {
+        res.render("/contactsDetail", { contact : contact });
+    });
+});
+
 module.exports = router;
