@@ -29,8 +29,41 @@
 
         </div>
     </div>
-    <a href="/admin/products" class="btn btn-default">목록으로</a>
-    <a href="/admin/products/edit/<%=contact.id%>" class="btn btn-primary">수정</a>
+    <a href="/contacts" class="btn btn-default">목록으로</a>
+    <a href="/contacts/edit/<%=contact.id%>" class="btn btn-primary">수정</a>
 
+    <script>
+        $(function() {
+
+            $("#commentForm").submit(function() {
+                var $contentVal = $(this).children("textarea[name=content]").val();
+
+                if ($contentVal) {
+
+                    $.ajax({
+                        url     : "/contacts/ajax_comment/insert",
+                        type    : "POST",
+                        data    : $(this).serialize(),
+                    })
+                    .done(function(args) {
+
+                        if(args.message==="success"){
+                            $('#comment_area').append(
+                                '<div>' + args.content + '</div>'
+                            );
+                            $('#commentForm textarea[name=content]').val("");
+                        }    
+                    })
+                    .fail(function(args) {
+                        console.log(args);
+                    });
+                } else {
+                    alert("댓글 내용을 입력해주세요");
+                }
+
+                return false;
+            });
+        });
+    </script>
 
 <% include ../footer.ejs %>
