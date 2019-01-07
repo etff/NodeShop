@@ -15,7 +15,14 @@
             <%=product.description%> 
             <!-- 댓글영역  -->
             <hr />
-            <div id="comment_area"></div>
+            <div id="comment_area">
+                <% comments.forEach(function(comment){ %>
+                    <div>
+                        <%=comment.content%>
+                        ( <a class='comment_delete' comment_id='<%=comment.id%>'>삭제</a> ) 
+                    </div>
+                <% }); %>
+            </div>
             
             <div>
                 댓글작성하기
@@ -49,9 +56,11 @@
                         
                         if(args.message==="success"){
                             $('#comment_area').append(
-                                '<div>' + args.content + '</div>'
+                                '<div>' + args.content + 
+                                " ( <a class='comment_delete' comment_id='"+ args.id +"'>삭제</a> ) </div>" 
                             );
                             $('#commentForm textarea[name=content]').val("");
+                            
                         }
                     })
                     .fail(function(args) {
@@ -64,6 +73,26 @@
                 return false;
             });
         });
+
+        $(document).on("click", ".comment_delete", function() {
+            var $self = $(this);
+            
+            $.ajax({
+                url : "/admin/products/ajax_comment/delete",
+                type: "POST",
+                data: { 
+                        commnet_id : $self.attr("comment_id")
+                },
+            })
+            .done(function() {
+                $self.parent().remove();
+                alert("삭제가 완료되었습니다");
+            })
+            .fail(function(args) {
+                console.log(args);
+            });
+        });
+
     </script>
 
 

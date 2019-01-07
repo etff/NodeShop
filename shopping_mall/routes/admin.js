@@ -34,13 +34,16 @@ router.post('/products/write', function(req,res){
     });
 });
 
-router.get("/products/detail/:id", function(req, res){
-    
+router.get('/products/detail/:id' , function(req, res){
     //url 에서 변수 값을 받아올떈 req.params.id 로 받아온다
-    ProductsModel.findOne( { "id" :  req.params.id } , function(err ,product){
-        res.render("admin/productsDetail", { product: product });  
+    ProductsModel.findOne( { 'id' :  req.params.id } , function(err ,product){
+        //제품정보를 받고 그안에서 댓글을 받아온다.
+        CommentsModel.find({ product_id : req.params.id } , function(err, comments){
+            res.render('admin/productsDetail', { product: product , comments : comments });
+        });        
     });
 });
+
 
 router.get("/products/edit/:id" , function(req, res) {
 
@@ -84,6 +87,12 @@ router.post("/products/ajax_comment/insert", function(req, res) {
             content : comment.content,
             message : "success"
         });
+    });
+});
+
+router.post('/products/ajax_comment/delete', function(req, res){
+    CommentsModel.remove({ id : req.body.comment_id } , function(err){
+        res.json({ message : "success" });
     });
 });
 

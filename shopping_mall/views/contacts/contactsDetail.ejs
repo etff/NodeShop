@@ -15,8 +15,14 @@
             <%=contact.email%> 
             <!-- 댓글영역  -->
             <hr />
-            <div id="comment_area"></div>
-            
+            <div id="comment_area">
+                <% comments.forEach(function(comment){ %>
+                    <div>
+                        <%=comment.content%>
+                        ( <a class='comment_delete' comment_id='<%=comment.id%>'>삭제</a> ) 
+                    </div>
+                <% }); %>
+            </div>
             <div>
                 댓글작성하기
                 <form id="commentForm" action="" method="post">
@@ -49,7 +55,8 @@
 
                         if(args.message==="success"){
                             $('#comment_area').append(
-                                '<div>' + args.content + '</div>'
+                                '<div>' + args.content + 
+                                " ( <a class='comment_delete' comment_id='"+ args.id +"'>삭제</a> ) </div>" 
                             );
                             $('#commentForm textarea[name=content]').val("");
                         }    
@@ -64,6 +71,9 @@
                 return false;
             });
         });
+
+        
+
     </script>
 
 <% include ../footer.ejs %>
