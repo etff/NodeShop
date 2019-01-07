@@ -42,7 +42,6 @@ app.get('/', function(req, res) {
 app.use("/admin", admin);
 app.use("/contacts", contacts);
 
-
 app.listen( port, function() {
     console.log("Express Listening on port", port);
 });

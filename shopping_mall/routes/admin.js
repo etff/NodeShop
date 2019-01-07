@@ -3,6 +3,10 @@ var router = express.Router();
 var ProductsModel = require("../models/ProductsModel");
 var CommentsModel = require("../models/CommentsModel");
 
+// csrf 셋팅
+var csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true });
+
 router.get("/", function(req, res) {
     res.send("admin page");
 });
@@ -16,11 +20,12 @@ router.get("/products", function(req, res) {
     });
 });
 
-router.get("/products/write", function(req, res) {
-    res.render("admin/form", { product : "" });
+router.get('/products/write', csrfProtection , function(req,res){
+    //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
+    res.render( 'admin/form' , { product : "", csrfToken : req.csrfToken() }); 
 });
 
-router.post('/products/write', function(req,res){
+router.post('/products/write', csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
         price : req.body.price,
