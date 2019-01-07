@@ -6,6 +6,7 @@ var app = express();
 var port = 3000;
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var express = require('express');
 
 //MongoDB 접속
@@ -39,6 +40,7 @@ app.get('/', function(req, res) {
 // 미들웨어 사용
 app.use("/admin", admin);
 app.use("/contacts", contacts);
+app.use(cookieParser());
 
 app.listen( port, function() {
     console.log("Express Listening on port", port);
