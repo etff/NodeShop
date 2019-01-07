@@ -3,11 +3,6 @@ var router = express.Router();
 var ProductsModel = require("../models/ProductsModel");
 var CommentsModel = require("../models/CommentsModel");
 
-function testMiddleWare(req, res, next) {
-    console.log("미들웨어 작동");
-    next();
-}
-
 router.get("/", function(req, res) {
     res.send("admin page");
 });
