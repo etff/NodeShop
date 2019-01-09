@@ -4,9 +4,9 @@ var admin = require("./routes/admin")
 var contacts = require("./routes/contacts")
 var app = express();
 var port = 3000;
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+var logger = require("morgan");
+var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
 var express = require('express');
 
 //MongoDB 접속
@@ -33,6 +33,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// 업로드 path 추가
+app.use("/uploads", express.static("uploads"));
 
 app.get('/', function(req, res) {
     res.send("first app");

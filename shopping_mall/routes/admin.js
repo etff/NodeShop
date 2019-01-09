@@ -3,9 +3,28 @@ var router = express.Router();
 var ProductsModel = require("../models/ProductsModel");
 var CommentsModel = require("../models/CommentsModel");
 
+// 이미지 저장되는 위치 설정
+var path = require('path');
+var uploadDir = path.join( __dirname , '../uploads' ); // 루트의 uploads위치에 저장한다.
+var fs = require('fs');
+
 // csrf 셋팅
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
+
+// multer 셋팅
+var multer = require("multer");
+var storage = multer.diskStorage({
+    
+    destination : function ( req, file, callback) {     // 이미지가 저장되는 도착지 지정
+        callback(null, uploadDir);
+    },
+    filename : function (req, file, callback) {     // products 날짜.jpg(png) 저장
+        callback(null, "products-" + Date.now() + "." + file.mimetype.split("/")[1]);
+    }
+});
+var upload = multer({ storage : storage});
+
 
 router.get("/", function(req, res) {
     res.send("admin page");
@@ -20,15 +39,19 @@ router.get("/products", function(req, res) {
     });
 });
 
-router.get('/products/write', csrfProtection , function(req,res){
+router.get('/products/write',csrfProtection , function(req,res){
     //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
     res.render( 'admin/form' , { product : "", csrfToken : req.csrfToken() }); 
 });
 
-router.post('/products/write', csrfProtection, function(req,res){
+router.post('/products/write', upload.single("thumbnail"), csrfProtection, function(req,res){
+
+    console.log(req.file);
+
     var product = new ProductsModel({
         name : req.body.name,
         price : req.body.price,
+        thumbnail : (req.file) ? req.file.filename : "",
         description : req.body.description,
     });
 
@@ -60,37 +83,34 @@ router.get('/products/detail/:id' , function(req, res){
 });
 
 
-router.get("/products/edit/:id" , function(req, res) {
+router.get("/products/edit/:id" , csrfProtection, function(req, res) {
 
     // 기존에 폼에 value안에 값을 셋팅하기 위해 만든다.
-
-    
     ProductsModel.findOne({ id : req.params.id }, function(err, product) {
-        res.render("admin/form", { product : product });
+        res.render("admin/form", { product : product, csrfToken : req.csrfToken() });
     });
 });
 
-router.post("/products/edit/:id", function(req, res) {
+router.post("/products/edit/:id", upload.single("thumbnail"), csrfProtection, function(req, res) {
 
-    // 넣을 변수 값을 셋팅한다.
-    var query = {
-        name    : req.body.name,
-        price   : req.body.price,
-        description :   req.body.description
-    };
-    
-    var post = new PostModel(query);
-    
-    if(!post.validateSync()){
-        PostModel.update({ id : req.params.id }, { $set : query }, function(err){
-            //res.redirect('/posts/detail/' + req.params.id );
-            res.redirect("/admin/products/detail/" + req.params.id );   // 수정 후 본래보던 상세페이지로
-        });
-    }
-    // // update의 첫번째 인자는 조건, 두번째 인자는 바뀔 값들
-    // ProductsModel.update({ id : req.params.id }, { $set : query }, function(err) {
-    //     res.redirect('/posts/detail/' + req.params.id );
-    // });
+    ProductsModel.findOne({ id : req.params.id}, function( err, product) {
+        // 넣을 변수 값을 셋팅한다.
+        var query = {
+            name    : req.body.name,
+            thumbnail : (req.file) ? req.file.filename : product.thumbnail,
+            price   : req.body.price,
+            description :   req.body.description
+        };
+        
+        var post = new ProductsModel(query);
+        
+        if(!post.validateSync()){
+            ProductsModel.update({ id : req.params.id }, { $set : query }, function(err){
+                //res.redirect('/posts/detail/' + req.params.id );
+                res.redirect("/admin/products/detail/" + req.params.id );   // 수정 후 본래보던 상세페이지로
+            });
+        }
+    });
 });
 
 router.get("/products/delete/:id", function(req, res) {
