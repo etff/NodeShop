@@ -94,6 +94,11 @@ router.get("/products/edit/:id" , csrfProtection, function(req, res) {
 router.post("/products/edit/:id", upload.single("thumbnail"), csrfProtection, function(req, res) {
 
     ProductsModel.findOne({ id : req.params.id}, function( err, product) {
+
+        if(req.file && product.thumbnail) {      // 요청 중에 파일이 존재하고 파일리퀘스트가 있으면 이전이미지를 지운다.
+            fs.unlinkSync( uploadDir + "/" + product.thumbnail );
+        }
+
         // 넣을 변수 값을 셋팅한다.
         var query = {
             name    : req.body.name,
