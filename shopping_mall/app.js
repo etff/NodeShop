@@ -1,8 +1,10 @@
 var express = require("express");
 var path = require("path");
 var admin = require("./routes/admin")
+var accounts = require("./routes/accounts")
 var contacts = require("./routes/contacts")
 var app = express();
+
 var port = 3000;
 var logger = require("morgan");
 var bodyParser = require("body-parser");
@@ -44,6 +46,7 @@ app.get('/', function(req, res) {
 // 미들웨어 사용
 app.use("/admin", admin);
 app.use("/contacts", contacts);
+app.use("/accounts", accounts);
 
 app.listen( port, function() {
     console.log("Express Listening on port", port);
