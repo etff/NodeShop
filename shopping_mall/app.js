@@ -1,8 +1,9 @@
 var express = require("express");
 var path = require("path");
-var admin = require("./routes/admin")
-var accounts = require("./routes/accounts")
-var contacts = require("./routes/contacts")
+var admin = require("./routes/admin");
+var accounts = require("./routes/accounts");
+var contacts = require("./routes/contacts");
+var auth = require("./routes/auth");
 var app = express();
 
 var port = 3000;
@@ -73,6 +74,7 @@ app.get('/', function(req, res) {
 app.use("/admin", admin);
 app.use("/contacts", contacts);
 app.use("/accounts", accounts);
+app.use("/auth", auth);
 
 app.listen( port, function() {
     console.log("Express Listening on port", port);
