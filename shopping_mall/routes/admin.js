@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var ProductsModel = require("../models/ProductsModel");
 var CommentsModel = require("../models/CommentsModel");
+var loginRequired = require('../libs/loginRequired.js')
 
 // 이미지 저장되는 위치 설정
 var path = require('path');
@@ -39,20 +40,21 @@ router.get("/products", function(req, res) {
     });
 });
 
-router.get('/products/write',csrfProtection , function(req,res){
+router.get('/products/write',loginRequired, csrfProtection , function(req,res){
     //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
     res.render( 'admin/form' , { product : "", csrfToken : req.csrfToken() }); 
 });
 
-router.post('/products/write', upload.single("thumbnail"), csrfProtection, function(req,res){
+router.post('/products/write',loginRequired, upload.single("thumbnail"), csrfProtection, function(req,res){
 
     console.log(req.file);
 
     var product = new ProductsModel({
-        name : req.body.name,
-        price : req.body.price,
-        thumbnail : (req.file) ? req.file.filename : "",
+        name        : req.body.name,
+        price       : req.body.price,
+        thumbnail   : (req.file) ? req.file.filename : "",
         description : req.body.description,
+        username    : req.user.username
     });
 
     var validationError = product.validateSync();

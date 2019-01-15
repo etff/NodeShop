@@ -66,6 +66,12 @@ app.use(passport.session());
 //플래시 메시지 관련
 app.use(flash());
 
+app.use(function(req, res, next) {
+
+    app.locals.isLogin = req.isAuthenticated();
+    next();
+});
+
 app.get('/', function(req, res) {
     res.send("first app");
 });
@@ -79,3 +85,4 @@ app.use("/auth", auth);
 app.listen( port, function() {
     console.log("Express Listening on port", port);
 });
+
