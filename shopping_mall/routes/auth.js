@@ -14,7 +14,7 @@ passport.deserializeUser(function (user, done) {
 
 passport.use(new FacebookStrategy({
         // https://devlopers.facebook.com에서 appId 및 secretID 발급
-       
+      
         profileFields : ['id', 'displayName', 'photos', 'email'] //받고 싶은 필드 나열
     },
 

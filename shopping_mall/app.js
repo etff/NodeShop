@@ -3,10 +3,14 @@ var path = require("path");
 var admin = require("./routes/admin");
 var accounts = require("./routes/accounts");
 var contacts = require("./routes/contacts");
+var profile = require("./routes/profile");
+var home = require('./routes/home');
 var auth = require("./routes/auth");
-var app = express();
+var chat = require('./routes/chat');
 
+var app = express();
 var port = 3000;
+
 var logger = require("morgan");
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
@@ -72,17 +76,24 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/', function(req, res) {
-    res.send("first app");
-});
 
 // 미들웨어 사용
+app.use('/', home);
 app.use("/admin", admin);
 app.use("/contacts", contacts);
 app.use("/accounts", accounts);
 app.use("/auth", auth);
+app.use('/chat', chat);
+app.use("/profile", profile);
 
-app.listen( port, function() {
+
+var server = app.listen( port, function() {
     console.log("Express Listening on port", port);
 });
 
+var listen = require('socket.io');
+var io = listen(server);
+require('./libs/socketConnection')(io);
+
+//var socketConnection = require('./libs/socketConnection');
+//socketConnection(io)
