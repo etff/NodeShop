@@ -3,6 +3,7 @@ var router = express.Router();
 var UserModel = require('../models/UserModel');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+require('dotenv').config();
 
 passport.serializeUser(function (user, done) {
     done(null, user);
@@ -14,7 +15,9 @@ passport.deserializeUser(function (user, done) {
 
 passport.use(new FacebookStrategy({
         // https://devlopers.facebook.com에서 appId 및 secretID 발급
-        
+        clientID : process.env.clientID,
+        clientSecret : process.env.clientSecret,
+        callbackURL : "https://localhost:3000/auth/facebook/callback",
         profileFields : ['id', 'displayName', 'photos', 'email'] //받고 싶은 필드 나열
     },
 

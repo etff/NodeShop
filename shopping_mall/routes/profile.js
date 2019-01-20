@@ -1,34 +1,40 @@
 var express = require("express");
 var router  = express.Router();
 var UsersModel = require("../models/UserModel");
+var loginRequired = require('../libs/loginRequired');
+var passport = require('passport');
 
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
 
-router.get("/", function(req, res) {
-
-    UsersModel.find({}, function(err, Users) {
-        res.render("contacts/contacts", {
-            "contacts" : contacts
-        })
+passport.deserializeUser(function (user, done) {
+    UsersModel.findOne({ id : userId} , function (err, user) {
+        done(null, user);
     });
 });
 
-router.get("/edit/:id", function(req, res) {
-
-    ContactsModel.findOne({ id : req.params.id},  function(req, contact) {
-        res.render("contacts/form", { contact : contact }); 
-    });
+router.get("/", loginRequired, function(req, res) {
+    res.render('profile/index', { user : req.user });
 });
 
-router.post("/edit/:id", function(req, res) {
+router.get("/edit", loginRequired, function(req, res) {
+    res.render('profile/form', { user : req.user });
+});
+
+router.post("/edit", loginRequired, function(req, res) {
 
     var query = {
-        name    : req.body.name,
-        phone   : req.body.phone,
-        email   : req.body.email
+        displayname : req.body.displayname
+    };
+
+    // 패스워드가 있으면 셋팅
+    if (req.body.password) {
+        query.password = passwordHash(req.body.password);
     }
 
-    ContactsModel.update({ id : req.params.id }, { $set : query }, function(err) {
-        res.redirect("/contacts/detail/" + req.params.id );  
+    UserModel.update({ id : req.user.id } , { $set : query }, function( err ) {
+        res.redirect('/profile');
     });
 });
 

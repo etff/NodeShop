@@ -37,7 +37,7 @@ db.once('open', function(){
     console.log('mongodb connect');
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/fastcampus', { useMongoClient: true });
+mongoose.connect(process.env.DB_HOST, { useMongoClient: true });
 
 // 확장자가 ejs 로 끝나는 뷰 엔진을 추가한다.
 app.set("views", path.join(__dirname, "views"));
