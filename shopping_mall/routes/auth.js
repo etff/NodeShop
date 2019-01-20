@@ -3,6 +3,8 @@ var router = express.Router();
 var UserModel = require('../models/UserModel');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
+var KakaoStrategy = require('passport-kakao').Strategy;
+
 require('dotenv').config();
 
 passport.serializeUser(function (user, done) {
@@ -13,10 +15,37 @@ passport.deserializeUser(function (user, done) {
     done(null, user);
 });
 
+passport.use('kakao-login', new KakaoStrategy({
+    clientID : process.env.kakao_clientID,
+    clientSecret : process.env.kakao_clientSecret,
+    callbackURL : 'http://localhost:3000/auth/kakao/callback'
+},
+function(accessToken, refreshToken, profile, done) {
+        
+    //console.log(profile);
+    UserModel.findOne({ username : "kakao_" + profile.id }, function(err, user) {
+        if(!user) {
+            var regData = { // DB에 등록 및 세션에 등록될 데이터
+                username : "kakao_" + profile.id,
+                password : "kakao_login",
+                displayname : profile.displayName
+            };
+            var User = new UserModel(regData);
+            User.save(function(err) {
+                done(null, regData);
+            });
+        } else {    // 있으면 DB에서 가져와서 세션등록
+            done(null, user);
+        }
+    });
+}
+
+));
+
 passport.use(new FacebookStrategy({
         // https://devlopers.facebook.com에서 appId 및 secretID 발급
-        clientID : process.env.clientID,
-        clientSecret : process.env.clientSecret,
+        clientID : process.env.facebook_clientID,
+        clientSecret : process.env.facebook_clientSecret,
         callbackURL : "https://localhost:3000/auth/facebook/callback",
         profileFields : ['id', 'displayName', 'photos', 'email'] //받고 싶은 필드 나열
     },
@@ -54,6 +83,15 @@ router.get('/facebook/callback',
         }
     )
 );
+
+router.get('/kakao', passport.authenticate('kakao-login'));
+router.get('/kakao/callback', 
+    passport.authenticate('kakao-login',
+    {
+        successRedirect: '/',
+        failureRedirect: '/auth/facebook/fail' 
+    }
+));
 
 //로그인 성공시 이동할 주소
 router.get('/facebook/success', function(req,res){
