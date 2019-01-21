@@ -4,6 +4,7 @@ var admin = require("./routes/admin");
 var accounts = require("./routes/accounts");
 var contacts = require("./routes/contacts");
 var profile = require("./routes/profile");
+var products = require('./routes/products');
 var home = require('./routes/home');
 var auth = require("./routes/auth");
 var chat = require('./routes/chat');
@@ -84,7 +85,6 @@ app.use(function(req, res, next) {
     next();
 });
 
-
 // 미들웨어 사용
 app.use('/', home);
 app.use("/admin", admin);
@@ -93,7 +93,7 @@ app.use("/accounts", accounts);
 app.use("/auth", auth);
 app.use('/chat', chat);
 app.use('/profile', profile);
-
+app.use('/products', products);
 
 var server = app.listen( port, function() {
     console.log("Express Listening on port", port);

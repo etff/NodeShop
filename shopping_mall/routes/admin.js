@@ -2,7 +2,9 @@ var express = require("express");
 var router = express.Router();
 var ProductsModel = require("../models/ProductsModel");
 var CommentsModel = require("../models/CommentsModel");
-var loginRequired = require('../libs/loginRequired.js')
+var loginRequired = require('../libs/loginRequired.js');
+var co = require('co');
+var paginate = require('express-paginate');
 
 // 이미지 저장되는 위치 설정
 var path = require('path');
@@ -31,13 +33,25 @@ router.get("/", function(req, res) {
     res.send("admin page");
 });
 
-router.get("/products", function(req, res) {
-    
-    ProductsModel.find({}, function(err, products) {
-        res.render("admin/products", {
-            "products": products
+router.get('/products', paginate.middleware(3, 50), async (req,res) => {
+
+    try{
+        const [ results, itemCount ] = await Promise.all([
+            ProductsModel.find().sort('-created_at').limit(req.query.limit).skip(req.skip).exec(),
+            ProductsModel.count({})
+        ]);
+        const pageCount = Math.ceil(itemCount / req.query.limit);
+        
+        const pages = paginate.getArrayPages(req)( 4 , pageCount, req.query.page);
+
+        res.render('admin/products', { 
+            products : results , 
+            pages: pages,
+            pageCount : pageCount,
         });
-    });
+    }catch(error) {
+        throw(error);
+    }
 });
 
 router.get('/products/write',loginRequired, csrfProtection , function(req,res){
@@ -75,15 +89,17 @@ router.post('/products/write',loginRequired, upload.single("thumbnail"), csrfPro
 });
 
 router.get('/products/detail/:id' , function(req, res){
-    //url 에서 변수 값을 받아올떈 req.params.id 로 받아온다
-    ProductsModel.findOne( { 'id' :  req.params.id } , function(err ,product){
-        //제품정보를 받고 그안에서 댓글을 받아온다.
-        CommentsModel.find({ product_id : req.params.id } , function(err, comments){
-            res.render('admin/productsDetail', { product: product , comments : comments });
-        });        
+    var getData = async() => {
+        return {
+            product : await ProductsModel.findOne( { 'id' :  req.params.id }).exec(),
+            comments : await CommentsModel.find( { 'product_id' :  req.params.id }).exec()
+        };
+    };
+    getData().then( function(result){
+        res.render('admin/productsDetail', 
+            { product: result.product , comments : result.comments });
     });
 });
-
 
 router.get("/products/edit/:id" , csrfProtection, function(req, res) {
 
@@ -147,5 +163,13 @@ router.post('/products/ajax_comment/delete', function(req, res){
         res.json({ message : "success" });
     });
 });
+
+router.post('/products/ajax_summernote', loginRequired, 
+    upload.single('thumbnail'), 
+    
+    function(req,res) {
+        res.send( '/uploads/' + req.file.filename);
+    }
+);
 
 module.exports = router;
