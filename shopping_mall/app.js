@@ -8,6 +8,7 @@ var products = require('./routes/products');
 var home = require('./routes/home');
 var auth = require("./routes/auth");
 var chat = require('./routes/chat');
+var cart = require('./routes/cart');
 
 var app = express();
 var port = 3000;
@@ -54,6 +55,9 @@ app.use(cookieParser());
 // 업로드 path 추가
 app.use("/uploads", express.static("uploads"));
 
+//static path 추가
+app.use('/static', express.static('static'));
+
 //session 관련 셋팅
 var connectMongo = require('connect-mongo');
 var MongoStore = connectMongo(session);
@@ -94,6 +98,7 @@ app.use("/auth", auth);
 app.use('/chat', chat);
 app.use('/profile', profile);
 app.use('/products', products);
+app.use('/cart', cart);
 
 var server = app.listen( port, function() {
     console.log("Express Listening on port", port);
