@@ -9,6 +9,7 @@ var home = require('./routes/home');
 var auth = require("./routes/auth");
 var chat = require('./routes/chat');
 var cart = require('./routes/cart');
+var checkout = require('./routes/checkout');
 
 var app = express();
 var port = 3000;
@@ -99,6 +100,7 @@ app.use('/chat', chat);
 app.use('/profile', profile);
 app.use('/products', products);
 app.use('/cart', cart);
+app.use('/checkout', checkout);
 
 var server = app.listen( port, function() {
     console.log("Express Listening on port", port);
