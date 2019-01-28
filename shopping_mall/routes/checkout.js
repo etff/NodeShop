@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 var CheckoutModel = require('../models/CheckoutModel');
 
+const { Iamporter, IamporterError } = require('iamporter');
+const iamporter = new Iamporter({
+    apiKey: process.env.iamport_key,
+    secret: process.env.iamport_secret
+});
 router.get('/' , function(req, res){
     
     var totalAmount = 0; //총결제금액
@@ -19,27 +24,29 @@ router.get('/' , function(req, res){
     res.render('checkout/index', { cartList : cartList , totalAmount : totalAmount } );
 });
 
-router.post('/complete', (req,res)=>{
+router.get('/complete', (req,res)=>{
 
-    var checkout = new CheckoutModel({
-        imp_uid : req.body.imp_uid,
-        merchant_uid : req.body.merchant_uid,
-        paid_amount : req.body.paid_amount,
-        apply_num : req.body.apply_num,
-        
-        buyer_email : req.body.buyer_email,
-        buyer_name : req.body.buyer_name,
-        buyer_tel : req.body.buyer_tel,
-        buyer_addr : req.body.buyer_addr,
-        buyer_postcode : req.body.buyer_postcode,
+    var asyncFunc = async ()=>{
+        var payData = await iamporter.findByImpUid(req.query.imp_uid);
+        var checkout = new CheckoutModel({
+            imp_uid : payData.data.imp_uid,
+            merchant_uid : payData.data.merchant_uid,
+            paid_amount : payData.data.amount,
+            apply_num : payData.data.apply_num,
+            
+            buyer_email : payData.data.buyer_email,
+            buyer_name : payData.data.buyer_name,
+            buyer_tel : payData.data.buyer_tel,
+            buyer_addr : payData.data.buyer_addr,
+            buyer_postcode : payData.data.buyer_postcode,
 
-        status : req.body.status,
+            status : "결재완료"
     });
-
-    checkout.save(function(err){
-        res.json({message:"success"});
+    await checkout.save();
+    };
+    asyncFunc().then( function(result) {
+        res.redirect('/checkout/success');
     });
-
 });
 
 router.post('/mobile_complete', (req,res)=>{
