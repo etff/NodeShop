@@ -49,6 +49,7 @@ router.get('/complete', (req,res)=>{
     });
 });
 
+
 router.post('/mobile_complete', (req,res)=>{
     var checkout = new CheckoutModel({
         imp_uid : req.body.imp_uid,
@@ -72,6 +73,16 @@ router.post('/mobile_complete', (req,res)=>{
 
 router.get('/success', function(req,res){
     res.render('checkout/success');
+});
+
+router.get('/nomember', function(req,res){
+    res.render('checkout/nomember');
+});
+
+router.get('/nomember/search', function(req,res){
+    CheckoutModel.find({ buyer_email : req.query.email }, function(err, checkoutList){
+        res.render('checkout/search', { checkoutList : checkoutList } );
+    });
 });
 
 module.exports = router;

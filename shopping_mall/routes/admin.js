@@ -2,8 +2,9 @@ var express = require("express");
 var router = express.Router();
 var ProductsModel = require("../models/ProductsModel");
 var CommentsModel = require("../models/CommentsModel");
-var loginRequired = require('../libs/loginRequired.js');
-var checkoutModel = require('../models/CheckoutModel');
+var adminRequired = require('../libs/adminRequired');
+
+var CheckoutModel = require('../models/CheckoutModel');
 var co = require('co');
 var paginate = require('express-paginate');
 
@@ -55,12 +56,12 @@ router.get('/products', paginate.middleware(3, 50), async (req,res) => {
     }
 });
 
-router.get('/products/write',loginRequired, csrfProtection , function(req,res){
+router.get('/products/write',adminRequired, csrfProtection , function(req,res){
     //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
     res.render( 'admin/form' , { product : "", csrfToken : req.csrfToken() }); 
 });
 
-router.post('/products/write',loginRequired, upload.single("thumbnail"), csrfProtection, function(req,res){
+router.post('/products/write',adminRequired, upload.single("thumbnail"), csrfProtection, function(req,res){
 
     console.log(req.file);
 
@@ -165,7 +166,7 @@ router.post('/products/ajax_comment/delete', function(req, res){
     });
 });
 
-router.post('/products/ajax_summernote', loginRequired, 
+router.post('/products/ajax_summernote', adminRequired, 
     upload.single('thumbnail'), 
     
     function(req,res) {
@@ -188,5 +189,11 @@ router.get('/order/edit/:id', function(req,res){
         );
     });
 });
+
+router.get('/statistics', adminRequired, function(req,res){
+    res.render('admin/statistics');
+});
+
+
 
 module.exports = router;

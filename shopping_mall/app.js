@@ -87,6 +87,7 @@ app.use(flash());
 app.use(function(req, res, next) {
 
     app.locals.isLogin = req.isAuthenticated();
+    app.locals.userData = req.user; 
     next();
 });
 
