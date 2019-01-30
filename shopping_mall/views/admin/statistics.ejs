@@ -28,9 +28,11 @@ function drawbar() {
     ['날짜', '결제자수', { role: 'annotation' } ],
     
     //그다음부터 데이터
-    ["08-10", 10 , "(10)"],
-    ["08-11", 20 , "(20)"],
-    ["08-12", 30 , "(32)"]
+     <% barData.forEach(function(value){ %>
+        ["<%=value._id.year%>-<%=value._id.month%>-<%=value._id.day%>"
+         , <%=value.count%> 
+         , "(<%=value.count%>)"],
+    <% }) %>
   ]);
 
   //차트 상단에 나올 제목, 차트 전체에 세로 길이등을 지정
@@ -51,8 +53,10 @@ google.charts.setOnLoadCallback(drawpie);
 function drawpie() {
   var data = google.visualization.arrayToDataTable([
     ['Task', 'Hours per Day'],
-    ['결재자',  50],
-    ['미결재자',  10]
+    
+     <% pieData.forEach(function(value){ %>
+        ['<%=value._id%>',  <%=value.count%>],
+    <% }) %>
   ]);
 
 var options = {

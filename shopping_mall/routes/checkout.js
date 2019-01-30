@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var CheckoutModel = require('../models/CheckoutModel');
 
+var request = require('request');
+var cheerio = require('cheerio');
+var removeEmpty = require('../libs/removeEmpty');
+
 const { Iamporter, IamporterError } = require('iamporter');
 const iamporter = new Iamporter({
     apiKey: process.env.iamport_key,
@@ -82,6 +86,21 @@ router.get('/nomember', function(req,res){
 router.get('/nomember/search', function(req,res){
     CheckoutModel.find({ buyer_email : req.query.email }, function(err, checkoutList){
         res.render('checkout/search', { checkoutList : checkoutList } );
+    });
+});
+
+router.get('/shipping/:invc_no', (req,res)=>{
+
+    //대한통운의 현재 배송위치 크롤링 주소
+    var url = "https://www.doortodoor.co.kr/parcel/doortodoor.do?fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT&invc_no=" + req.params.invc_no ;
+    var result = []; //최종 보내는 데이터
+    request(url, (error, response, body) => {  
+        //한글 변환
+        var $ = cheerio.load(body, { decodeEntities: false });
+
+        var tdElements = $(".board_area").find("table.mb15 tbody tr td"); //td의 데이터를 전부 긁어온다
+        console.log( removeEmpty(tdElements[10].children[0].data));
+        res.send('111');
     });
 });
 
