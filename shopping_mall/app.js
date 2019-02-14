@@ -64,7 +64,7 @@ var connectMongo = require('connect-mongo');
 var MongoStore = connectMongo(session);
 
 var sessionMiddleWare = session({
-    secret: 'fastcampus',
+    secret: 'test',
     resave: false,
     saveUninitialized: true,
     cookie: {
